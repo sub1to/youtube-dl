@@ -9,25 +9,28 @@ from ..utils import (
 
 
 class DumpertIE(InfoExtractor):
-    _VALID_URL = r'(?P<protocol>https?)://(?:(?:www|legacy)\.)?dumpert\.nl/(?:mediabase|embed|item)/(?P<id>[0-9]+[/_][0-9a-zA-Z]+)'
+    _VALID_URL = r'(?P<protocol>https?)://(?:(?:www|legacy)\.)?dumpert\.nl/(?:mediabase/|embed/|item/|(?:toppers|latest)?\?selectedId=)(?P<id>[0-9]+[/_][0-9a-zA-Z]+)'
     _TESTS = [{
-        'url': 'https://www.dumpert.nl/item/6646981_951bc60f',
-        'md5': '1b9318d7d5054e7dcb9dc7654f21d643',
+        'url': 'https://www.dumpert.nl/toppers?selectedId=100047162_9197be8a',
+        'md5': 'f45fd6919d887c9c72f61e1cc5ae0257',
         'info_dict': {
-            'id': '6646981/951bc60f',
-            'ext': 'mp4',
-            'title': 'Ik heb nieuws voor je',
-            'description': 'Niet schrikken hoor',
-            'thumbnail': r're:^https?://.*\.jpg$',
+            'id': '100047162/9197be8a',
+            'ext': 'm3u8',
+            'title': 'Engelse humor',
+            'description': '<p>Hebben het wel </p>',
+            'thumbnail': r're:^https?://.*\.(?:jpg|png)$',
         }
     }, {
-        'url': 'https://www.dumpert.nl/embed/6675421_dc440fe7',
+        'url': 'https://www.dumpert.nl/item/100047162_9197be8a',
         'only_matching': True,
     }, {
-        'url': 'http://legacy.dumpert.nl/mediabase/6646981/951bc60f',
+        'url': 'https://www.dumpert.nl/embed/100047162/9197be8a',
         'only_matching': True,
     }, {
-        'url': 'http://legacy.dumpert.nl/embed/6675421/dc440fe7',
+        'url': 'http://legacy.dumpert.nl/mediabase/100047162/9197be8a',
+        'only_matching': True,
+    }, {
+        'url': 'http://legacy.dumpert.nl/embed/100047162/9197be8a',
         'only_matching': True,
     }]
 
@@ -39,7 +42,7 @@ class DumpertIE(InfoExtractor):
         title = item['title']
         media = next(m for m in item['media'] if m.get('mediatype') == 'VIDEO')
 
-        quality = qualities(['flv', 'mobile', 'tablet', '720p'])
+        quality = qualities(['flv', 'mobile', 'tablet', '720p', 'stream'])
         formats = []
         for variant in media.get('variants', []):
             uri = variant.get('uri')
